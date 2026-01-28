@@ -46,3 +46,8 @@ data/
 backups/
 *.sql
 *.dump
+
+*.keystore
+*.jks
+*.pem
+*.p12

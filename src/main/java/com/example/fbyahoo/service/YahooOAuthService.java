@@ -2,6 +2,9 @@ package com.example.fbyahoo.service;
 
 import com.example.fbyahoo.config.YahooProperties;
 import com.example.fbyahoo.dto.YahooTokenResponse;
+import com.example.fbyahoo.enums.OAuthFailureReason;
+import com.example.fbyahoo.exception.OAuthFlowException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -22,7 +25,7 @@ public class YahooOAuthService {
         this.yahooProperties = yahooProperties;
         this.oauthClient = builder
                 .baseUrl(yahooProperties.getOauth().getBaseUrl())
-                .defaultHeader(MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .build();
     }
 
@@ -59,7 +62,13 @@ public class YahooOAuthService {
                 .header("Authorization", "Basic " + basic)
                 .body(BodyInserters.fromFormData(form))
                 .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError() || status.is5xxServerError(),
+                        response -> response.bodyToMono(String.class)
+                                .map(errorBody -> new OAuthFlowException(OAuthFailureReason.TOKEN_EXCHANGE_ERROR, "Failed to exchange code for token: " + errorBody))
+                )
                 .bodyToMono(YahooTokenResponse.class)
+                .timeout(java.time.Duration.ofSeconds(10))
                 .block();
 
     }
@@ -78,6 +87,7 @@ public class YahooOAuthService {
                 .body(BodyInserters.fromFormData(form))
                 .retrieve()
                 .bodyToMono(YahooTokenResponse.class)
+                .timeout(java.time.Duration.ofSeconds(10))
                 .block();
     }
 

@@ -5,5 +5,7 @@ public enum OAuthFailureReason {
     TOKEN_EXPIRED,
     REFRESH_FAILED,
     STATE_MISMATCH,
-    ACCESS_REVOKED
+    ACCESS_REVOKED,
+    TOKEN_EXCHANGE_ERROR
+
 }
