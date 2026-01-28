@@ -4,6 +4,8 @@ import com.example.fbyahoo.config.YahooProperties;
 import com.example.fbyahoo.dto.YahooTokenResponse;
 import com.example.fbyahoo.enums.OAuthFailureReason;
 import com.example.fbyahoo.exception.OAuthFlowException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ public class YahooOAuthService {
 
     private final YahooProperties yahooProperties;
     private final WebClient oauthClient;
+
+    private static final Logger log = LoggerFactory.getLogger(YahooOAuthService.class);
 
 
     public YahooOAuthService(YahooProperties yahooProperties, WebClient.Builder builder) {
@@ -48,6 +52,7 @@ public class YahooOAuthService {
 
 
     public YahooTokenResponse exchangeCodeForToken(String code){
+        log.debug("Exchanging Yahoo authorization code for tokens");
 
         String basic = Base64.getEncoder().encodeToString((yahooProperties.getOauth().getClientId() + ":" + yahooProperties.getOauth().getClientSecret()).getBytes());
 
@@ -65,7 +70,13 @@ public class YahooOAuthService {
                 .onStatus(
                         status -> status.is4xxClientError() || status.is5xxServerError(),
                         response -> response.bodyToMono(String.class)
-                                .map(errorBody -> new OAuthFlowException(OAuthFailureReason.TOKEN_EXCHANGE_ERROR, "Failed to exchange code for token: " + errorBody))
+                                .map(errorBody -> {
+                                    log.warn("Yahoo token exchange failed (status={})", response.statusCode());
+                                    return new OAuthFlowException(
+                                            OAuthFailureReason.TOKEN_EXCHANGE_ERROR,
+                                            "Failed to exchange code for token: " + errorBody
+                                    );
+                                })
                 )
                 .bodyToMono(YahooTokenResponse.class)
                 .timeout(java.time.Duration.ofSeconds(10))
@@ -83,9 +94,19 @@ public class YahooOAuthService {
         return oauthClient.post()
                 .uri(yahooProperties.getOauth().getTokenUrl())
                 .header("Authorization", "Basic " + basic)
-                .header("Content-Type", "application/x-www-form-urlencoded")
                 .body(BodyInserters.fromFormData(form))
                 .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError() || status.is5xxServerError(),
+                        response -> response.bodyToMono(String.class)
+                                .map(errorBody -> {
+                                    log.warn("Yahoo token refresh failed (status={})", response.statusCode().value());
+                                    return new OAuthFlowException(
+                                            OAuthFailureReason.REFRESH_FAILED,
+                                            "Failed to refresh token: " + errorBody
+                                    );
+                                })
+                )
                 .bodyToMono(YahooTokenResponse.class)
                 .timeout(java.time.Duration.ofSeconds(10))
                 .block();
@@ -93,6 +114,3 @@ public class YahooOAuthService {
 
 
 }
-
-
-
