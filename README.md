@@ -1,6 +1,6 @@
 # FB Helper (Yahoo Fantasy)
 
-FB Helper is a **local-first Yahoo Fantasy Sports helper** built for learning, experimentation, and personal use.
+FB Helper is a **local-first Yahoo Fantasy Sports helper** built for learning, experimentation, and personal use. It is primarily for basketball now, but may expand later. 
 
 This project is designed to be:
 - Open-source
@@ -103,6 +103,7 @@ Each user must create their own Yahoo OAuth app.
    - **Application Name**: Any name you like (e.g. `FB Helper Local`)
    - **Homepage URL**: `https://localhost:8443`
    - **Redirect URI(s)**: `https://localhost:8443/oauth/yahoo/callback` (must match exactly, including protocol and port)
+     - if you change this, match the changes in .env file and YahooOAuthController.java endpoint
    - **OAuth Client Type**: Confidential Client
    - **API Permissions / Scopes**: Enable Fantasy Sports (Read)
 4. Create the app and copy:

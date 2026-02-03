@@ -51,3 +51,7 @@ backups/
 *.jks
 *.pem
 *.p12
+
+.claude/*
+
+plans/
