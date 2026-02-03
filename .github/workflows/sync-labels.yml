@@ -1,0 +1,33 @@
+name: Sync Labels
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sync-labels.yml'
+  schedule:
+    # Run daily at 00:00 UTC to keep labels in sync
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  sync-labels:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Sync labels from organization .github repository
+        uses: EndBug/label-sync@v2
+        with:
+          # Sync labels from the organization's .github repository
+          config-file: https://raw.githubusercontent.com/ethankook/.github/main/.github/labels.yml
+          # Delete labels that are not in the config file
+          delete-other-labels: false
+          # Token with write permissions to issues
+          token: ${{ secrets.GITHUB_TOKEN }}

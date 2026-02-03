@@ -219,6 +219,35 @@ Ensure:
 
 ---
 
+## Label Management
+
+This repository uses the organization-wide label definitions from the [.github repository](https://github.com/ethankook/.github).
+
+Labels are automatically synced from the organization's `.github/labels.yml` file using a GitHub Actions workflow (`.github/workflows/sync-labels.yml`).
+
+### How it works
+
+1. Labels are defined in the organization's `.github` repository at `.github/labels.yml`
+2. The `sync-labels.yml` workflow runs:
+   - On push to main branch (when the workflow file changes)
+   - Daily at midnight UTC (scheduled sync)
+   - Manually via workflow dispatch
+3. The workflow uses [EndBug/label-sync](https://github.com/EndBug/label-sync) to sync labels from the organization repository
+
+### Manual sync
+
+To manually trigger a label sync:
+
+1. Go to the [Actions tab](https://github.com/ethankook/FB-Yahoo/actions)
+2. Select "Sync Labels" workflow
+3. Click "Run workflow"
+
+### Available labels
+
+See the [organization's labels.yml](https://github.com/ethankook/.github/blob/main/.github/labels.yml) for the complete list of available labels.
+
+---
+
 ## Summary
 
 This project is designed to be:
