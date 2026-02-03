@@ -33,12 +33,12 @@ jobs:
           ISSUE_D=${{ steps.create_d.outputs.issue_d }}
 
           BODY=$(cat <<EOF
-### Description
-Task T for testing dependency automation
+          ### Description
+          Task T for testing dependency automation
 
-### Depends on
-- #$ISSUE_D
-EOF
+          ### Depends on
+          - #$ISSUE_D
+          EOF
           )
 
           ISSUE_T=$(gh api repos/$REPO/issues \
@@ -159,12 +159,12 @@ EOF
           ISSUE_F=${{ steps.create_f.outputs.issue_f }}
 
           BODY=$(cat <<EOF
-### Description
-Research child C1
+          ### Description
+          Research child C1
 
-### Parent Feature Issue
-Parent Feature Issue: #$ISSUE_F
-EOF
+          ### Parent Feature Issue
+          Parent Feature Issue: #$ISSUE_F
+          EOF
           )
 
           ISSUE_C1=$(gh api repos/$REPO/issues \
@@ -181,12 +181,12 @@ EOF
           ISSUE_F=${{ steps.create_f.outputs.issue_f }}
 
           BODY=$(cat <<EOF
-### Description
-Task child C2
+          ### Description
+          Task child C2
 
-### Parent Feature Issue
-Parent Feature Issue: #$ISSUE_F
-EOF
+          ### Parent Feature Issue
+          Parent Feature Issue: #$ISSUE_F
+          EOF
           )
 
           ISSUE_C2=$(gh api repos/$REPO/issues \
