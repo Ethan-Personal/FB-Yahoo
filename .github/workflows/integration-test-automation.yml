@@ -1,8 +1,3 @@
-- name: Debug auth
-  run: |
-    echo "GH_TOKEN length: ${#GH_TOKEN}"
-    gh auth status || true
-    gh api user --jq .login
 
 name: Integration Test – Issue Automation
 
@@ -18,6 +13,12 @@ jobs:
       PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
 
     steps:
+      - name: Debug auth
+        run: |
+          echo "GH_TOKEN length: ${#GH_TOKEN}"
+          gh auth status || true
+          gh api user --jq .login
+          
       - name: Setup environment
         run: |
           echo "Testing issue automation for $REPO"
