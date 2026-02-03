@@ -1,3 +1,9 @@
+- name: Debug auth
+  run: |
+    echo "GH_TOKEN length: ${#GH_TOKEN}"
+    gh auth status || true
+    gh api user --jq .login
+
 name: Integration Test – Issue Automation
 
 on:
