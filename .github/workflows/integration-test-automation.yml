@@ -32,7 +32,7 @@ jobs:
         run: |
           ISSUE_D=${{ steps.create_d.outputs.issue_d }}
 
-          BODY=$(cat <<'EOF'
+          BODY=$(cat <<EOF
           ### Description
           Task T for testing dependency automation
 
@@ -158,7 +158,7 @@ jobs:
         run: |
           ISSUE_F=${{ steps.create_f.outputs.issue_f }}
 
-          BODY=$(cat <<'EOF'
+          BODY=$(cat <<EOF
           ### Description
           Research child C1
 
@@ -180,7 +180,7 @@ jobs:
         run: |
           ISSUE_F=${{ steps.create_f.outputs.issue_f }}
 
-          BODY=$(cat <<'EOF'
+          BODY=$(cat <<EOF
           ### Description
           Task child C2
 
